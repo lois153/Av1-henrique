@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Catálogo de Carros</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <div class="container py-5">
+
+    <!-- Título -->
+    <h1 class="text-center mb-5">
+      Catálogo de Carros
+    </h1>
+
+    <!-- Pesquisa -->
+    <div class="mb-5">
+
+      <input
+        type="text"
+        id="pesquisa"
+        class="form-control form-control-lg"
+        placeholder="Digite uma marca..."
+      >
+
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="text-center d-none">
+
+      <div class="spinner-border text-warning"></div>
+
+      <p class="mt-2">
+        Carregando carros...
+      </p>
+
+    </div>
+
+    <!-- Erro -->
+    <div id="erro" class="alert alert-danger d-none">
+      Erro ao buscar carros.
+    </div>
+
+    <!-- Marca pesquisada -->
+    <h2 class="mb-4">
+      Marca Pesquisada
+    </h2>
+
+    <div id="resultadoMarcas" class="row g-4 mb-5"></div>
+
+    <!-- Marcas populares -->
+    <h2 class="mb-4">
+      Marcas Populares
+    </h2>
+
+    <div id="marcas" class="row g-4 mb-5"></div>
+
+  </div>
+
+  <!-- POPUP DOS CARROS -->
+  <div id="areaCarros" class="popup-carros d-none">
+
+    <div class="popup-conteudo">
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>
+          Carros
+        </h2>
+
+        <button
+          class="btn btn-danger"
+          onclick="fecharCarros()"
+        >
+          Fechar
+        </button>
+
+      </div>
+
+      <div id="carros" class="row g-4"></div>
+
+    </div>
+
+  </div>
+
+  <script src="js/script.js"></script>
+
+</body>
+
+</html>

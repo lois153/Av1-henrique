@@ -1,0 +1,61 @@
+body{
+  background-color: #111;
+  color: white;
+}
+
+.card{
+  transition: 0.3s;
+  border: none;
+}
+
+.card:hover{
+  transform: scale(1.03);
+}
+
+.marca-img{
+  height: 220px;
+  object-fit: cover;
+}
+
+.info{
+  color: orange;
+  font-weight: bold;
+}
+
+input{
+  background-color: #222 !important;
+  color: white !important;
+  border: none !important;
+}
+
+input::placeholder{
+  color: #aaa !important;
+}
+
+/* POPUP */
+
+.popup-carros{
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0,0,0,0.8);
+
+  overflow-y: auto;
+
+  z-index: 9999;
+
+  padding: 40px;
+}
+
+.popup-conteudo{
+  background: #111;
+
+  border-radius: 20px;
+
+  padding: 30px;
+}
