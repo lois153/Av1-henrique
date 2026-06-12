@@ -85,7 +85,7 @@ async function carregarCarros() {
 
             <div class="card-body d-flex flex-column">
 
-              <h4>${carro.make} ${carro.model}</h4>
+              <h4 class="titulo-carro">${carro.make} ${carro.model}</h4>
 
               <p>🚗 Ano: ${carro.year}</p>
 

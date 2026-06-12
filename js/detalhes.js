@@ -54,8 +54,8 @@ async function buscarDetalhes() {
 
         <div class="card-body">
 
-          <h1 class="mb-4">
-            ${carro.make} ${carro.model}
+          <h1 class="titulo-carro mb-4">
+          ${carro.make} ${carro.model}
           </h1>
 
           <div class="row">
