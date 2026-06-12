@@ -1,22 +1,15 @@
-const marcasDiv = document.getElementById("marcas")
-const carrosDiv = document.getElementById("carros")
-const resultadoMarcas = document.getElementById("resultadoMarcas")
+const carrosDiv = document.getElementById("carros");
+const loading = document.getElementById("loading");
+const erro = document.getElementById("erro");
 
-const areaCarros = document.getElementById("areaCarros")
-
-const loading = document.getElementById("loading")
-const erro = document.getElementById("erro")
-const pesquisa = document.getElementById("pesquisa")
+const API_KEY = "sL6ywns8zd1TLWoosmwByxGLlWM9H4tfqHQvCzpf";
 
 const marcas = [
-  "bmw",
   "audi",
+  "bmw",
   "toyota",
   "honda",
   "nissan",
-  "ferrari",
-  "lamborghini",
-  "porsche",
   "ford",
   "chevrolet",
   "hyundai",
@@ -28,107 +21,80 @@ const marcas = [
   "mitsubishi",
   "jeep",
   "tesla",
+  "ferrari",
+  "lamborghini",
+  "porsche",
   "bugatti"
-]
+];
 
-function mostrarMarcas(){
+async function carregarCarros() {
+  try {
+    loading.classList.remove("d-none");
 
-  marcas.forEach(marca => {
+    let todosCarros = [];
 
-    marcasDiv.innerHTML += `
+    const promessas = marcas.map(async (marca) => {
+      try {
+        const resposta = await fetch(
+          `https://api.api-ninjas.com/v1/cars?make=${marca}`,
+          {
+            headers: {
+              "X-Api-Key": API_KEY
+            }
+          }
+        );
 
-      <div class="col-md-3">
+        if (!resposta.ok) return [];
 
-        <div class="card bg-dark text-light shadow h-100">
+        return await resposta.json();
 
-          <div class="card-body text-center d-flex flex-column">
-
-            <h3 class="text-capitalize mb-4">
-              ${marca}
-            </h3>
-
-            <button
-              class="btn btn-warning mt-auto"
-              onclick="buscarCarros('${marca}')"
-            >
-              Ver carros
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    `
-  })
-}
-
-async function buscarCarros(marca){
-
-  carrosDiv.innerHTML = ""
-
-  areaCarros.classList.remove("d-none")
-
-  loading.classList.remove("d-none")
-
-  erro.classList.add("d-none")
-
-  try{
-
-    const resposta = await fetch(
-      `https://api.api-ninjas.com/v1/cars?make=${marca}`,
-      {
-        headers:{
-          "X-Api-Key":"sL6ywns8zd1TLWoosmwByxGLlWM9H4tfqHQvCzpf"
-        }
+      } catch {
+        return [];
       }
-    )
+    });
 
-    const dados = await resposta.json()
+    const resultados = await Promise.all(promessas);
 
-    loading.classList.add("d-none")
+    resultados.forEach(lista => {
+      todosCarros.push(...lista);
+    });
 
-    if(!dados || dados.length === 0){
+    loading.classList.add("d-none");
 
+    if (todosCarros.length === 0) {
       carrosDiv.innerHTML = `
         <div class="alert alert-warning">
           Nenhum carro encontrado.
         </div>
-      `
-
-      return
+      `;
+      return;
     }
 
-    dados.slice(0,12).forEach(carro => {
+    carrosDiv.innerHTML = "";
 
+    todosCarros.forEach((carro) => {
       carrosDiv.innerHTML += `
-
-        <div class="col-md-4">
-
+        <div class="col-lg-4 col-md-6">
           <div class="card bg-dark text-light shadow h-100">
 
             <img
-              src="https://cdn.imagin.studio/getimage?customer=img&make=${carro.make}&modelFamily=${carro.model}"
+              src="https://cdn.imagin.studio/getimage?customer=img&make=${encodeURIComponent(carro.make)}&modelFamily=${encodeURIComponent(carro.model)}"
               class="card-img-top marca-img"
+              alt="${carro.model}"
             >
 
             <div class="card-body d-flex flex-column">
 
-              <h3>${carro.make}</h3>
+              <h4>${carro.make} ${carro.model}</h4>
 
-              <p class="info">
-                ${carro.model}
-              </p>
+              <p>🚗 Ano: ${carro.year}</p>
 
-              <p>Ano: ${carro.year}</p>
+              <p>⛽ ${carro.fuel_type || "Não informado"}</p>
 
-              <p>Combustível: ${carro.fuel_type}</p>
-
-              <p>Transmissão: ${carro.transmission}</p>
+              <p>⚙️ ${carro.transmission || "Não informado"}</p>
 
               <a
-                href="detalhes.html?marca=${carro.make}&modelo=${carro.model}"
+                href="detalhes.html?marca=${encodeURIComponent(carro.make)}&modelo=${encodeURIComponent(carro.model)}"
                 class="btn btn-warning mt-auto"
               >
                 Ver detalhes
@@ -137,62 +103,18 @@ async function buscarCarros(marca){
             </div>
 
           </div>
-
         </div>
+      `;
+    });
 
-      `
-    })
+    console.log("Total de carros carregados:", todosCarros.length);
 
-  }catch(error){
+  } catch (error) {
+    console.error(error);
 
-    console.log(error)
-
-    loading.classList.add("d-none")
-
-    erro.classList.remove("d-none")
+    loading.classList.add("d-none");
+    erro.classList.remove("d-none");
   }
 }
 
-function fecharCarros(){
-
-  areaCarros.classList.add("d-none")
-
-  carrosDiv.innerHTML = ""
-}
-
-pesquisa.addEventListener("keydown", (e) => {
-
-  if(e.key === "Enter"){
-
-    const marca = pesquisa.value.toLowerCase()
-
-    resultadoMarcas.innerHTML = `
-
-      <div class="col-md-4">
-
-        <div class="card bg-dark text-light shadow h-100">
-
-          <div class="card-body text-center d-flex flex-column">
-
-            <h3 class="text-capitalize mb-4">
-              ${marca}
-            </h3>
-
-            <button
-              class="btn btn-warning mt-auto"
-              onclick="buscarCarros('${marca}')"
-            >
-              Ver carros
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    `
-  }
-})
-
-mostrarMarcas()
+carregarCarros();

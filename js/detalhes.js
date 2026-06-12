@@ -1,38 +1,55 @@
-const detalhesDiv = document.getElementById("detalhes")
-const loading = document.getElementById("loading")
-const erro = document.getElementById("erro")
+const detalhesDiv = document.getElementById("detalhes");
+const loading = document.getElementById("loading");
+const erro = document.getElementById("erro");
 
-const params = new URLSearchParams(window.location.search)
+const API_KEY = "sL6ywns8zd1TLWoosmwByxGLlWM9H4tfqHQvCzpf";
 
-const marca = params.get("marca")
-const modelo = params.get("modelo")
+const params = new URLSearchParams(window.location.search);
 
-async function buscarDetalhes(){
+const marca = params.get("marca");
+const modelo = params.get("modelo");
 
-  try{
+async function buscarDetalhes() {
+
+  try {
 
     const resposta = await fetch(
       `https://api.api-ninjas.com/v1/cars?make=${marca}&model=${modelo}`,
       {
-        headers:{
-          "X-Api-Key":"sL6ywns8zd1TLWoosmwByxGLlWM9H4tfqHQvCzpf"
+        headers: {
+          "X-Api-Key": API_KEY
         }
       }
-    )
+    );
 
-    const dados = await resposta.json()
+    if (!resposta.ok) {
+      throw new Error("Erro na API");
+    }
 
-    loading.classList.add("d-none")
+    const dados = await resposta.json();
 
-    const carro = dados[0]
+    loading.classList.add("d-none");
+
+    if (!dados.length) {
+
+      detalhesDiv.innerHTML = `
+        <div class="alert alert-warning">
+          Nenhum detalhe encontrado.
+        </div>
+      `;
+
+      return;
+    }
+
+    const carro = dados[0];
 
     detalhesDiv.innerHTML = `
-
       <div class="card bg-dark text-light shadow">
 
         <img
           src="https://cdn.imagin.studio/getimage?customer=img&make=${carro.make}&modelFamily=${carro.model}"
           class="card-img-top marca-img"
+          alt="${carro.model}"
         >
 
         <div class="card-body">
@@ -45,25 +62,25 @@ async function buscarDetalhes(){
 
             <div class="col-md-6">
 
-              <p><strong>Ano:</strong> ${carro.year}</p>
+              <p><strong>🚗 Ano:</strong> ${carro.year}</p>
 
-              <p><strong>Combustível:</strong> ${carro.fuel_type}</p>
+              <p><strong>⛽ Combustível:</strong> ${carro.fuel_type}</p>
 
-              <p><strong>Transmissão:</strong> ${carro.transmission}</p>
+              <p><strong>⚙️ Transmissão:</strong> ${carro.transmission}</p>
 
-              <p><strong>Cilindros:</strong> ${carro.cylinders}</p>
+              <p><strong>🔩 Cilindros:</strong> ${carro.cylinders}</p>
 
             </div>
 
             <div class="col-md-6">
 
-              <p><strong>Tração:</strong> ${carro.drive}</p>
+              <p><strong>🚙 Tração:</strong> ${carro.drive}</p>
 
-              <p><strong>Cidade MPG:</strong> ${carro.city_mpg}</p>
+              <p><strong>🏙 Cidade MPG:</strong> ${carro.city_mpg}</p>
 
-              <p><strong>Rodovia MPG:</strong> ${carro.highway_mpg}</p>
+              <p><strong>🛣 Rodovia MPG:</strong> ${carro.highway_mpg}</p>
 
-              <p><strong>Combinação MPG:</strong> ${carro.combination_mpg}</p>
+              <p><strong>📊 Média MPG:</strong> ${carro.combination_mpg}</p>
 
             </div>
 
@@ -72,17 +89,15 @@ async function buscarDetalhes(){
         </div>
 
       </div>
+    `;
 
-    `
+  } catch (error) {
 
-  }catch(error){
+    console.error(error);
 
-    console.log(error)
-
-    loading.classList.add("d-none")
-
-    erro.classList.remove("d-none")
+    loading.classList.add("d-none");
+    erro.classList.remove("d-none");
   }
 }
 
-buscarDetalhes()
+buscarDetalhes();
